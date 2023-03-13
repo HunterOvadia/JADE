@@ -1,5 +1,5 @@
 #pragma once
-#include "Buffer.h"
+#include "Memory/Buffer.h"
 
 namespace Jade
 {

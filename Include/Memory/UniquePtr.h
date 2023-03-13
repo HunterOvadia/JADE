@@ -1,6 +1,4 @@
 #pragma once
-#include <utility>
-
 namespace Jade
 {
 	template<typename T>

@@ -1,5 +1,5 @@
 #pragma once
-#include "Jade.h"
+#include "../Jade.h"
 
 namespace Jade
 {

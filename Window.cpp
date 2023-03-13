@@ -1,4 +1,6 @@
-#include "Window.h"
+#include "Jade.h"
+#include "Core/Window.h"
+#include "Math/Vector.h"
 
 namespace Jade
 {
@@ -8,6 +10,7 @@ namespace Jade
 		{
 			case WM_DESTROY:
 			{
+				// TODO(HO): For any window closed, this will close the application.
 				PostQuitMessage(0);
 			}
 			break;
@@ -22,23 +25,35 @@ namespace Jade
 	}
 
 	
-	Window::Window(HINSTANCE Instance, const WindowDescriptor& Descriptor): Win32Info()
+	Window::Window(HINSTANCE Instance)
+		: Win32Info()
 	{
 		Win32Info.Instance = Instance;
-		if(RegisterWindowClass())
-		{
-			Vector2<uint32> WindowPosition, WindowSize;
-			GetPositionAndSize(Descriptor.Position, Descriptor.Size, WindowPosition, WindowSize);
-			Win32Info.Handle = CreateWindowExA(
-				Win32Info.WindowExStyle, Win32Info.WindowClass.lpszClassName,
-				Descriptor.Title.CString(), Win32Info.WindowStyle,
-				WindowPosition.X(), WindowPosition.Y(), WindowSize.X(), WindowSize.Y(), 
-				nullptr, nullptr, Win32Info.Instance, nullptr
-			);
-		}
+		SetWindowState(EWindowState::EWS_Hidden);
 	}
 
 	Window::~Window()
+	{
+		Destroy();
+	}
+	
+	bool Window::Initialize(const WindowDescriptor& Descriptor)
+	{
+		RegisterWindowClass();
+		
+		Vector2<uint32> WindowPosition, WindowSize;
+		GetPositionAndSize(Descriptor.Position, Descriptor.Size, WindowPosition, WindowSize);
+		Win32Info.Handle = CreateWindowExA(
+			Win32Info.WindowExStyle, Win32Info.WindowClass.lpszClassName,
+			Descriptor.Title.CString(), Win32Info.WindowStyle,
+			WindowPosition.X(), WindowPosition.Y(), WindowSize.X(), WindowSize.Y(), 
+			nullptr, nullptr, Win32Info.Instance, nullptr
+		);
+
+		return Win32Info.Handle != nullptr;
+	}
+
+	void Window::Destroy() const
 	{
 		if (Win32Info.Handle)
 		{
@@ -46,10 +61,14 @@ namespace Jade
 			UnregisterClassA(Win32Info.WindowClass.lpszClassName, Win32Info.Instance);
 		}
 	}
-
-	void Window::Show() const
+	
+	void Window::SetWindowState(const EWindowState WindowState)
 	{
-		ShowWindow(Win32Info.Handle, SW_SHOW);
+		CurrentState = WindowState;
+		if(Win32Info.Handle)
+		{
+			ShowWindow(Win32Info.Handle, WindowState == EWindowState::EWS_Shown ? SW_SHOW : SW_HIDE);
+		}
 	}
 
 	void Window::GetPositionAndSize(const Vector2<uint32> InPosition, const Vector2<uint32> InSize, Vector2<uint32>& OutPosition, Vector2<uint32>& OutSize) const
@@ -59,14 +78,14 @@ namespace Jade
 
 		RECT BorderRect = { 0 };
 		AdjustWindowRectEx(&BorderRect, Win32Info.WindowStyle, 0, Win32Info.WindowExStyle);
-
+		
 		OutPosition.X() += BorderRect.left;
 		OutPosition.Y() += BorderRect.top;
 		OutSize.X() += (BorderRect.right - BorderRect.left);
 		OutSize.Y() += (BorderRect.bottom - BorderRect.top);
 	}
 
-	bool Window::RegisterWindowClass()
+	void Window::RegisterWindowClass()
 	{
 		// NOTE(HO): We will just pump every window the same for now...
 		Win32Info.WindowClass =
@@ -82,6 +101,6 @@ namespace Jade
 			.lpszClassName = "JadeWindowClass"
 		};
 
-		return RegisterClassA(&Win32Info.WindowClass);
+		RegisterClassA(&Win32Info.WindowClass);
 	}
 }

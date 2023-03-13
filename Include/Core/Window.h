@@ -1,7 +1,7 @@
 #pragma once
 #include "Jade.h"
-#include "String.h"
-#include "Vector.h"
+#include "Math/Vector.h"
+#include "Memory/String.h"
 
 namespace Jade
 {
@@ -12,13 +12,22 @@ namespace Jade
 		Vector2<uint32> Size;
 	};
 
+	enum class EWindowState : uint8
+	{
+		EWS_Shown,
+		EWS_Hidden
+	};
+
 	class Window
 	{
 	public:
-		explicit Window(HINSTANCE Instance, const WindowDescriptor& Descriptor);
+		explicit Window(HINSTANCE Instance);
 		~Window();
-		void Show() const;
-		
+
+		bool Initialize(const WindowDescriptor& Descriptor);
+		void SetWindowState(EWindowState WindowState);
+		void Destroy() const;
+
 	private:
 		void GetPositionAndSize(
 			Vector2<uint32> InPosition,
@@ -26,15 +35,16 @@ namespace Jade
 			Vector2<uint32>& OutPosition,
 			Vector2<uint32>& OutSize
 		) const;
-		bool RegisterWindowClass();
+		void RegisterWindowClass();
 
 	private:
+		EWindowState CurrentState;
 		struct Win32WindowInfo
 		{
 			HWND Handle;
 			HINSTANCE Instance;
 			WNDCLASSA WindowClass;
-			static constexpr uint32 WindowStyle = (WS_OVERLAPPED | WS_SYSMENU | WS_CAPTION | WS_MAXIMIZE | WS_MINIMIZEBOX | WS_THICKFRAME);
+			static constexpr uint32 WindowStyle = (WS_OVERLAPPED | WS_SYSMENU | WS_CAPTION | WS_MINIMIZEBOX | WS_THICKFRAME);
 			static constexpr uint32 WindowExStyle = (WS_EX_APPWINDOW);
 		} Win32Info;
 	};

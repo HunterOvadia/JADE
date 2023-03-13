@@ -1,7 +1,9 @@
 #include "Jade.h"
-#include "Application.h"
-#include "UniquePtr.h"
-#include "Window.h"
+#include "Core/Application.h"
+#include "Core/Window.h"
+#include "Math/Vector.h"
+#include "Memory/SharedPtr.h"
+#include "Memory/UniquePtr.h"
 
 int WINAPI WinMain(HINSTANCE Instance, HINSTANCE PrevInstance, PSTR CmdLine, int CmdShow)
 {
@@ -11,17 +13,15 @@ int WINAPI WinMain(HINSTANCE Instance, HINSTANCE PrevInstance, PSTR CmdLine, int
 		const Jade::WindowDescriptor Descriptor =
 		{
 			.Title = "Window Title",
-			.Position = Jade::Vector2<uint32>(100 ,100),
+			.Position = Jade::Vector2<uint32>(100,100),
 			.Size = Jade::Vector2<uint32>(1280, 720)
 		};
 
-		const Jade::SharedPtr<Jade::Window> MainWindow = Application->CreateAndSetActiveWindow(Descriptor);
+		const Jade::SharedPtr<Jade::Window> MainWindow = Application->CreateAndSetActiveWindow(Descriptor, Jade::EWindowState::EWS_Shown);
 		if(MainWindow)
 		{
-			MainWindow->Show();
+			Application->Poll();
 		}
-
-		Application->Poll();
 	}
 
 	Application->Shutdown();

@@ -9,31 +9,21 @@ namespace Jade
 	class Application
 	{
 	public:
-		Application();
+		Application() = default;
 		~Application();
-		bool Init();
+		bool Init(HINSTANCE InInstance);
 		void Shutdown();
 		void Poll();
-
-		Jade::SharedPtr<Jade::Window> MakeWindow(const WindowDescriptor& Descriptor);
+		SharedPtr<Window> CreateAndSetActiveWindow(const WindowDescriptor& Descriptor);
 
 	private:
 		void PumpMessages();
 		void Update();
 		void Render();
 
-		bool RegisterWindowClass();
-		void GetWindowPositionAndSize(
-			Vector2<uint32> InPosition,
-			Vector2<uint32> InSize,
-			Vector2<uint32>& OutPosition,
-			Vector2<uint32>& OutSize
-		);
-
 	private:
+		HINSTANCE Instance;
 		bool bIsRunning = false;
-		Jade::SharedPtr<Jade::Window> ActiveWindow;
-		//UniquePtr<Jade::Window> Window;
-		
+		SharedPtr<Window> ActiveWindow;
 	};
 }

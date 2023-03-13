@@ -9,10 +9,9 @@ namespace Jade
 		String() : Internal(nullptr, 0) {}
 		String(const char* Input) : Internal(nullptr, 0)
 		{
-			int64 Size = strlen(Input) + 1;
+			const uint64 Size = strlen(Input) + 1;
 			Internal.Copy(Input, Size);
 		}
-		~String() {}
 
 		String& operator=(const String& Other)
 		{
@@ -26,6 +25,7 @@ namespace Jade
 
 		String operator+(const String& Other) const
 		{
+			// TODO(HO): Implement
 			return *this;
 		}
 

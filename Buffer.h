@@ -7,8 +7,8 @@ namespace Jade
 	class Buffer
 	{
 	public:
-		Buffer(T* Data, uint64 InSize) : MemoryBlock(Data), Size(InSize) {}
-		Buffer(uint64 InSize) : MemoryBlock(nullptr), Size(InSize)
+		Buffer(T* Data, const uint64 InSize) : MemoryBlock(Data), Size(InSize) {}
+		explicit Buffer(const uint64 InSize) : MemoryBlock(nullptr), Size(InSize)
 		{
 			MemoryBlock = new T[Size];
 		}

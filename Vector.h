@@ -9,7 +9,7 @@ namespace Jade
 	{
 	public:
 		template<typename... TArgs>
-		Vector(TArgs... Args) : Elements{Args...} {}
+		explicit Vector(TArgs... Args) : Elements{Args...} {}
 
 		T& operator[](int Index)
 		{
@@ -31,7 +31,7 @@ namespace Jade
 		using TVector = Vector<T, 2>;
 
 	public:
-		Vector2() : TVector((T)0, (T)0) {}
+		Vector2() : TVector(static_cast<T>(0), static_cast<T>(0)) {}
 		Vector2(T X, T Y) : TVector(X, Y) {}
 		T& X() { return this->Elements[0]; }
 		T& Y() { return this->Elements[1]; }
@@ -43,11 +43,11 @@ namespace Jade
 		using TVector = Vector<T, 3>;
 
 	public:
-		Vector3() : TVector((T)0, (T)0, (T)0) {}
+		Vector3() : TVector(static_cast<T>(0), static_cast<T>(0), static_cast<T>(0)) {}
 		Vector3(T X, T Y, T Z) : TVector(X, Y, Z) {}
-		T X() const { return this->Elements[0]; }
-		T Y() const { return this->Elements[1]; }
-		T Z() const { return this->Elements[2]; }
+		T& X() { return this->Elements[0]; }
+		T& Y() { return this->Elements[1]; }
+		T& Z() { return this->Elements[2]; }
 	};
 
 	template<typename T>
@@ -56,11 +56,11 @@ namespace Jade
 		using TVector = Vector<T, 4>;
 
 	public:
-		Vector4() : TVector((T)0, (T)0, (T)0, (T)0) {}
+		Vector4() : TVector(static_cast<T>(0), static_cast<T>(0), static_cast<T>(0), static_cast<T>(0)) {}
 		Vector4(T X, T Y, T Z, T W) : TVector(X, Y, Z, W) {}
-		T X() const { return this->Elements[0]; }
-		T Y() const { return this->Elements[1]; }
-		T Z() const { return this->Elements[2]; }
-		T W() const { return this->Elements[3]; }
+		T& X() { return this->Elements[0]; }
+		T& Y() { return this->Elements[1]; }
+		T& Z() { return this->Elements[2]; }
+		T& W() { return this->Elements[3]; }
 	};
 }

@@ -7,7 +7,7 @@ namespace Jade
 	class UniquePtr
 	{
 	public:
-		UniquePtr(T* Pointer = nullptr) : InternalPointer(Pointer) {}
+		explicit UniquePtr(T* Pointer = nullptr) : InternalPointer(Pointer) {}
 		~UniquePtr()
 		{
 			delete InternalPointer;
@@ -16,13 +16,13 @@ namespace Jade
 
 		UniquePtr(const UniquePtr<T>&) = delete;
 		UniquePtr<T>& operator=(const UniquePtr<T>&) = delete;
-		UniquePtr(UniquePtr<T>&& Other)
+		UniquePtr(UniquePtr<T>&& Other) noexcept
 		{
 			InternalPointer = Other.InternalPointer;
 			Other.InternalPointer = nullptr;
 		}
 
-		UniquePtr<T>& operator=(UniquePtr<T>&& Other)
+		UniquePtr<T>& operator=(UniquePtr<T>&& Other) noexcept
 		{
 			if (this != &Other)
 			{

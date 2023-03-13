@@ -1,7 +1,5 @@
 #pragma once
 #include "Jade.h"
-#include "Math/Vector.h"
-#include "Memory/String.h"
 
 namespace Jade
 {

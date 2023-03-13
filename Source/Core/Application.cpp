@@ -1,6 +1,5 @@
 #include "Core/Application.h"
 #include "Core/Window.h"
-#include "Memory/SharedPtr.h"
 #include "Jade.h"
 
 namespace Jade

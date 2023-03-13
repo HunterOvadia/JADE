@@ -1,6 +1,5 @@
 #pragma once
 #include "Memory/Buffer.h"
-
 namespace Jade
 {
 	class String

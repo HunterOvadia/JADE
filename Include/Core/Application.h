@@ -1,6 +1,5 @@
 #pragma once
 #include "Jade.h"
-#include "Memory/SharedPtr.h"
 
 namespace Jade
 {

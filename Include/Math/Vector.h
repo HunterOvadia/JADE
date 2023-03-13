@@ -1,7 +1,4 @@
 #pragma once
-#include <type_traits>
-#include <tuple>
-
 namespace Jade
 {
 	template<typename T, uint64 Count>

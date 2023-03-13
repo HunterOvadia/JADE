@@ -32,3 +32,9 @@ STATIC_ASSERT(sizeof(float32) == 4, "Expected f32 to be 4 bytes.");
 STATIC_ASSERT(sizeof(float64) == 8, "Expected f64 to be 8 bytes.");
 
 #define SAFE_DELETE(x) if((x)) { delete (x); (x) = nullptr; }
+
+#include "Memory/Buffer.h"
+#include "Memory/SharedPtr.h"
+#include "Memory/UniquePtr.h"
+#include "Memory/String.h"
+#include "Math/Vector.h"

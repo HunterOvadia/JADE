@@ -1,9 +1,6 @@
 #include "Jade.h"
 #include "Core/Application.h"
 #include "Core/Window.h"
-#include "Math/Vector.h"
-#include "Memory/SharedPtr.h"
-#include "Memory/UniquePtr.h"
 
 int WINAPI WinMain(HINSTANCE Instance, HINSTANCE PrevInstance, PSTR CmdLine, int CmdShow)
 {

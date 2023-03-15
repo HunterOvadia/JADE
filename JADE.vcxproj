@@ -292,6 +292,7 @@
       <AdditionalIncludeDirectories>Include/</AdditionalIncludeDirectories>
       <LinkCompiled>true</LinkCompiled>
     </ClCompile>
+    <ClCompile Include="Source\Graphics\GraphicsDX11.cpp" />
     <ClCompile Include="Source\Main.cpp">
       <RuntimeLibrary>MultiThreadedDebugDll</RuntimeLibrary>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -370,6 +371,7 @@
   <ItemGroup>
     <ClInclude Include="Include\Core\Application.h" />
     <ClInclude Include="Include\Core\Window.h" />
+    <ClInclude Include="Include\Graphics\GraphicsDX11.h" />
     <ClInclude Include="Include\Jade.h" />
     <ClInclude Include="Include\Math\Vector.h" />
     <ClInclude Include="Include\Memory\Buffer.h" />

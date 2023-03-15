@@ -4,11 +4,11 @@
 
 namespace Jade
 {
-	bool Application::Init(HINSTANCE InInstance)
+	bool Application::Initialize(HINSTANCE InInstance)
 	{
 		Instance = InInstance;
 		bIsRunning = true;
-		return bIsRunning;
+		return true;
 	}
 
 	Application::~Application()
@@ -47,44 +47,12 @@ namespace Jade
 		return ResultWindow;
 	}
 	
-	void Application::Poll()
+	void Application::TickFrame()
 	{
-		while (bIsRunning)
+		if(ActiveWindow)
 		{
-			PumpMessages();
-			Update();
-			Render();
+			ActiveWindow->UpdateAndRender(*this);
 		}
-	}
-
-
-	void Application::PumpMessages()
-	{
-		MSG Message;
-		while (PeekMessageA(&Message, nullptr, 0, 0, PM_REMOVE))
-		{
-			TranslateMessage(&Message);
-			DispatchMessageA(&Message);
-			if (Message.message == WM_QUIT)
-			{
-				bIsRunning = false;
-				break;
-			}
-		}
-	}
-
-	void Application::Update()
-	{
-		// Input Polling
-	}
-
-	void Application::Render()
-	{
-		// Render Start (Clear)
-
-		// Push to Renderer
-
-		// Render End (Present)
 	}
 }
 

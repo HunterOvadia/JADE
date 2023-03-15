@@ -20,6 +20,8 @@ namespace Jade
 			Other.InternalPointer = nullptr;
 		}
 
+		T* Get() const { return InternalPointer; }
+
 		UniquePtr<T>& operator=(UniquePtr<T>&& Other) noexcept
 		{
 			if (this != &Other)
@@ -32,16 +34,11 @@ namespace Jade
 			return *this;
 		}
 
-		T* operator->() const
-		{
-			return InternalPointer;
-		}
 
-		T& operator*() const
-		{
-			return *InternalPointer;
-		}
-
+		T* operator->() const { return InternalPointer; }
+		T& operator*() const { return *InternalPointer; }
+		operator bool() const { return InternalPointer != nullptr; }
+		
 	private:
 		T* InternalPointer;
 	};

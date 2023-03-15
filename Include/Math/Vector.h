@@ -1,4 +1,6 @@
 #pragma once
+#include "Jade.h"
+
 namespace Jade
 {
 	template<typename T, uint64 Count>
@@ -16,6 +18,11 @@ namespace Jade
 		const T& operator[](int Index) const
 		{
 			return Elements[Index];
+		}
+
+		bool operator!=(const Vector& Lhs)
+		{
+			return Elements != Lhs.Elements;
 		}
 
 	protected:

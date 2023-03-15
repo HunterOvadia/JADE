@@ -1,5 +1,6 @@
 #pragma once
 #include "Jade.h"
+#include "Graphics/GraphicsDX11.h"
 
 namespace Jade
 {
@@ -11,21 +12,20 @@ namespace Jade
 	public:
 		Application() = default;
 		~Application();
-		bool Init(HINSTANCE InInstance);
-		void Shutdown();
-		void Poll();
 
-		SharedPtr<Window> CreateNewWindow(const WindowDescriptor& Descriptor, EWindowState WindowState) const;
+		bool IsRunning() const { return bIsRunning; }
+		bool Initialize(HINSTANCE InInstance);
+		void Shutdown();
+		void TickFrame();
+		
 		SharedPtr<Window> CreateAndSetActiveWindow(const WindowDescriptor& Descriptor, EWindowState WindowState);
 
 	private:
-		void PumpMessages();
-		void Update();
-		void Render();
-
+		SharedPtr<Window> CreateNewWindow(const WindowDescriptor& Descriptor, EWindowState WindowState) const;
+	
 	private:
-		HINSTANCE Instance;
 		bool bIsRunning = false;
+		HINSTANCE Instance;
 		SharedPtr<Window> ActiveWindow;
 	};
 }

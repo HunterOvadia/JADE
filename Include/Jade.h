@@ -1,12 +1,21 @@
 #pragma once
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
+#include <d3d11_1.h>
+#include <d3dcompiler.h>
+
+#pragma comment(lib, "user32")
+#pragma comment(lib, "d3d11")
+#pragma comment(lib, "d3dcompiler")
+
 
 #if defined(__clang__) || defined(__gcc__)
 	#define STATIC_ASSERT _Static_assert
 #else
 	#define STATIC_ASSERT static_assert
 #endif
+
+#define DEBUG_BREAK __debugbreak();
 
 typedef unsigned char       uint8;
 typedef unsigned short      uint16;
@@ -31,7 +40,10 @@ typedef double              float64;
 STATIC_ASSERT(sizeof(float32) == 4, "Expected f32 to be 4 bytes.");
 STATIC_ASSERT(sizeof(float64) == 8, "Expected f64 to be 8 bytes.");
 
+#define UUIDOF(Type, Var) __uuidof(Type), reinterpret_cast<void**>(&(Var))
 #define SAFE_DELETE(x) if((x)) { delete (x); (x) = nullptr; }
+#define SAFE_RELEASE(x) if((x)) { (x)->Release(); (x) = nullptr; }
+#define HR_CHECK(x) if((x) != S_OK) { DEBUG_BREAK }
 
 #include "Memory/Buffer.h"
 #include "Memory/SharedPtr.h"

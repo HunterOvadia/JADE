@@ -50,8 +50,6 @@ namespace Jade
     private:
         void CreateDevice();
         void CreateRenderTargetView();
-        void CreateSamplerState();
-        void CreateBlendState();
         
     private:
         DXInterface Interface;

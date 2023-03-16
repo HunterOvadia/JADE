@@ -1,18 +1,35 @@
 ﻿#pragma once
-#include <d3d11_1.h>
-#include "Math/Vector.h"
+#include "Jade.h"
 
 namespace Jade
 {
     class Window;
     struct DXInterface
     {
-        ID3D11Device1* Device;
-        ID3D11DeviceContext1* DeviceContext;
-        ID3D11SamplerState* SamplerState;
-        ID3D11BlendState* BlendState;
+        ID3D11Device* Device;
+        ID3D11DeviceContext* DeviceContext;
         IDXGISwapChain1* SwapChain;
         ID3D11RenderTargetView* FramebufferRTV;
+
+    };
+
+    template<typename T>
+    struct ScopedComPtr
+    {
+    public:
+        ScopedComPtr() : Pointer(nullptr) {}
+        ScopedComPtr(T* Input) : Pointer(Input) {}
+        ~ScopedComPtr()
+        {
+            SAFE_RELEASE(Pointer);
+        }
+
+        operator T*() const { return Pointer; }
+        T** operator&() { return &Pointer; }
+        T* operator->() const { return Pointer; }
+
+    private:
+        T* Pointer;
     };
     
     class GraphicsDX11

@@ -2,11 +2,18 @@
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 #include <d3d11_1.h>
-#include <d3dcompiler.h>
 
-#pragma comment(lib, "user32")
-#pragma comment(lib, "d3d11")
-#pragma comment(lib, "d3dcompiler")
+#pragma comment (lib, "gdi32")
+#pragma comment (lib, "user32")
+#pragma comment (lib, "dxguid")
+#pragma comment (lib, "d3d11")
+#pragma comment (lib, "d3dcompiler")
+
+#ifdef NDEBUG
+	#define DEBUG_MODE 0
+#else
+	#define DEBUG_MODE 1
+#endif
 
 
 #if defined(__clang__) || defined(__gcc__)
@@ -15,9 +22,15 @@
 	#define STATIC_ASSERT static_assert
 #endif
 
-#define DEBUG_BREAK __debugbreak();
-#define ASSERT(Cond) if(!(Cond)) { DEBUG_BREAK }
-#define HR_CHECK(x) ASSERT(SUCCEEDED(x))
+#if DEBUG_MODE
+	#define DEBUG_BREAK __debugbreak();
+	#define ASSERT(Cond) if(!(Cond)) { DEBUG_BREAK }
+	#define HR_CHECK(x) ASSERT(SUCCEEDED(x))
+#else
+	#define DEBUG_BREAK 
+	#define ASSERT(Cond) (Cond)
+	#define HR_CHECK(x) (x)
+#endif
 
 #define UUIDOF(Type, Var) __uuidof(Type), reinterpret_cast<void**>(&(Var))
 #define SAFE_DELETE(x) if((x)) { delete (x); (x) = nullptr; }

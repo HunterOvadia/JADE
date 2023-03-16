@@ -19,16 +19,13 @@ namespace Jade
     {
         CreateDevice();
         CreateSwapChain();
-        CreateSamplerState();
-        CreateBlendState();
+        CreateRenderTargetView();
         Resize(OwningWindow->GetSize());
         return true;
     }
 
     void GraphicsDX11::Shutdown()
     {
-        SAFE_RELEASE(Interface.BlendState);
-        SAFE_RELEASE(Interface.SamplerState);
         SAFE_RELEASE(Interface.FramebufferRTV);
         SAFE_RELEASE(Interface.SwapChain);
         SAFE_RELEASE(Interface.DeviceContext);
@@ -39,22 +36,30 @@ namespace Jade
     {
         D3D_FEATURE_LEVEL FeatureLevels[] = { D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_1, D3D_FEATURE_LEVEL_10_0 };
 
-        ID3D11Device* TempDevice;
-        ID3D11DeviceContext* TempDeviceContext;
+        
+        {
+            UINT Flags = 0;
+#if DEBUG_MODE
+            Flags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif
+            HR_CHECK(D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, Flags, FeatureLevels, ARRAYSIZE(FeatureLevels), D3D11_SDK_VERSION, &Interface.Device, nullptr, &Interface.DeviceContext));
+        }
 
-        HR_CHECK(D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, D3D11_CREATE_DEVICE_DEBUG, FeatureLevels, ARRAYSIZE(FeatureLevels), D3D11_SDK_VERSION, &TempDevice, nullptr, &TempDeviceContext));
-        HR_CHECK(TempDevice->QueryInterface(UUIDOF(ID3D11Device1, Interface.Device)));
-        HR_CHECK(TempDeviceContext->QueryInterface(UUIDOF(ID3D11DeviceContext1, Interface.DeviceContext)));
-
-        SAFE_RELEASE(TempDeviceContext);
-        SAFE_RELEASE(TempDevice);
+#if DEBUG_MODE
+        {
+            ScopedComPtr<ID3D11InfoQueue> Info;
+            Interface.Device->QueryInterface(UUIDOF(ID3D11InfoQueue, Info));
+            Info->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_CORRUPTION, TRUE);
+            Info->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_ERROR, TRUE);
+        }
+#endif
     }
 
     void GraphicsDX11::CreateRenderTargetView()
     {
-        ID3D11Texture2D* FramebufferTexture;
+        ScopedComPtr<ID3D11Texture2D> FramebufferTexture;
         HR_CHECK(Interface.SwapChain->GetBuffer(0, UUIDOF(ID3D11Texture2D, FramebufferTexture)));
-
+        
         const D3D11_RENDER_TARGET_VIEW_DESC RTVDesc =
         {
             .Format = DXGI_FORMAT_B8G8R8A8_UNORM_SRGB,
@@ -66,55 +71,18 @@ namespace Jade
         };
         
         HR_CHECK(Interface.Device->CreateRenderTargetView(FramebufferTexture, &RTVDesc, &Interface.FramebufferRTV));
-        SAFE_RELEASE(FramebufferTexture);
     }
-
-    void GraphicsDX11::CreateSamplerState()
-    {
-        const D3D11_SAMPLER_DESC SamplerDesc =
-        {
-            .Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR,
-            .AddressU = D3D11_TEXTURE_ADDRESS_WRAP,
-            .AddressV = D3D11_TEXTURE_ADDRESS_WRAP,
-            .AddressW = D3D11_TEXTURE_ADDRESS_WRAP,
-            .ComparisonFunc = D3D11_COMPARISON_NEVER,
-            .MaxLOD = D3D11_FLOAT32_MAX
-        };
-        
-        HR_CHECK(Interface.Device->CreateSamplerState(&SamplerDesc, &Interface.SamplerState));
-    }
-
-    void GraphicsDX11::CreateBlendState()
-    {
-        D3D11_BLEND_DESC BlendStateDesc =
-        {
-            .AlphaToCoverageEnable = FALSE,
-            .IndependentBlendEnable = FALSE
-        };
-        BlendStateDesc.RenderTarget[0].BlendEnable = TRUE;
-        BlendStateDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-        BlendStateDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-        BlendStateDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-        BlendStateDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_SRC_ALPHA;
-        BlendStateDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_DEST_ALPHA;
-        BlendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-        BlendStateDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-        
-        HR_CHECK(Interface.Device->CreateBlendState(&BlendStateDesc, &Interface.BlendState));
-    }
-
+    
     void GraphicsDX11::CreateSwapChain()
     {
-        IDXGIDevice1* DXGIDevice;
-        HR_CHECK(Interface.Device->QueryInterface(UUIDOF(IDXGIDevice1, DXGIDevice)));
+        ScopedComPtr<IDXGIDevice2> DXGIDevice;
+        HR_CHECK(Interface.Device->QueryInterface(UUIDOF(IDXGIDevice2, DXGIDevice)));
 
-        IDXGIAdapter* DXGIAdapter;
+        ScopedComPtr<IDXGIAdapter> DXGIAdapter;
         HR_CHECK(DXGIDevice->GetAdapter(&DXGIAdapter));
-        SAFE_RELEASE(DXGIDevice);
         
-        IDXGIFactory2* DXGIFactory;
+        ScopedComPtr<IDXGIFactory2> DXGIFactory;
         HR_CHECK(DXGIAdapter->GetParent(UUIDOF(IDXGIFactory2, DXGIFactory)));
-        SAFE_RELEASE(DXGIAdapter);
 
         DXGI_SWAP_CHAIN_DESC1 SwapChainDesc =
         {
@@ -130,10 +98,7 @@ namespace Jade
         };
 
         HR_CHECK(DXGIFactory->CreateSwapChainForHwnd(Interface.Device, OwningWindow->GetWindowInfo().Handle, &SwapChainDesc, nullptr, nullptr, &Interface.SwapChain));
-        SAFE_RELEASE(DXGIFactory);
         HR_CHECK(Interface.SwapChain->GetDesc1(&SwapChainDesc));
-
-        CreateRenderTargetView();
     }
 
     void GraphicsDX11::Resize(Vector2<int32> NewSize) const

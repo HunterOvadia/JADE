@@ -24,7 +24,7 @@ namespace Jade
 		HWND Handle;
 		HINSTANCE Instance;
 		WNDCLASSA WindowClass;
-		static constexpr uint32 WindowStyle = (WS_OVERLAPPED | WS_SYSMENU | WS_CAPTION | WS_MINIMIZEBOX | WS_THICKFRAME);
+		static constexpr uint32 WindowStyle = (WS_OVERLAPPEDWINDOW);
 		static constexpr uint32 WindowExStyle = (WS_EX_APPWINDOW);
 	};
 

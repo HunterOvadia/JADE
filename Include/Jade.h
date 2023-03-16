@@ -16,6 +16,13 @@
 #endif
 
 #define DEBUG_BREAK __debugbreak();
+#define ASSERT(Cond) if(!(Cond)) { DEBUG_BREAK }
+#define HR_CHECK(x) ASSERT(SUCCEEDED(x))
+
+#define UUIDOF(Type, Var) __uuidof(Type), reinterpret_cast<void**>(&(Var))
+#define SAFE_DELETE(x) if((x)) { delete (x); (x) = nullptr; }
+#define SAFE_RELEASE(x) if((x)) { (x)->Release(); (x) = nullptr; }
+
 
 typedef unsigned char       uint8;
 typedef unsigned short      uint16;
@@ -39,11 +46,6 @@ typedef float               float32;
 typedef double              float64;
 STATIC_ASSERT(sizeof(float32) == 4, "Expected f32 to be 4 bytes.");
 STATIC_ASSERT(sizeof(float64) == 8, "Expected f64 to be 8 bytes.");
-
-#define UUIDOF(Type, Var) __uuidof(Type), reinterpret_cast<void**>(&(Var))
-#define SAFE_DELETE(x) if((x)) { delete (x); (x) = nullptr; }
-#define SAFE_RELEASE(x) if((x)) { (x)->Release(); (x) = nullptr; }
-#define HR_CHECK(x) if((x) != S_OK) { DEBUG_BREAK }
 
 #include "Memory/Buffer.h"
 #include "Memory/SharedPtr.h"

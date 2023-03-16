@@ -68,21 +68,10 @@ namespace Jade
 			nullptr, nullptr, Win32Info.Instance, this
 		);
 
-		if(!Win32Info.Handle)
-		{
-			return false;
-		}
-		
-		GraphicsRenderer = UniquePtr<GraphicsDX11>(new GraphicsDX11(this));
-		if(!GraphicsRenderer)
-		{
-			return false;
-		}
+		ASSERT(Win32Info.Handle);
 
-		if(!GraphicsRenderer->Initialize())
-		{
-			return false;
-		}
+		GraphicsRenderer = UniquePtr<GraphicsDX11>(new GraphicsDX11(this));
+		ASSERT(GraphicsRenderer && GraphicsRenderer->Initialize());
 
 		return true;
 	}
@@ -101,7 +90,7 @@ namespace Jade
 		}
 	}
 
-	void Window::Resize(Vector2<int32> InSize)
+	void Window::Resize(const Vector2<int32> InSize)
 	{
 		Size = InSize;
 		GraphicsRenderer->Resize(InSize);
@@ -114,7 +103,9 @@ namespace Jade
 	void Window::Render()
 	{
 		GraphicsRenderer->PreRender();
-		GraphicsRenderer->Render();
+		{
+			GraphicsRenderer->Render();
+		}
 		GraphicsRenderer->PostRender();
 	}
 
@@ -164,7 +155,6 @@ namespace Jade
 
 	void Window::RegisterWindowClass()
 	{
-		// NOTE(HO): We will just pump every window the same for now...
 		Win32Info.WindowClass =
 		{
 			.style = CS_VREDRAW | CS_HREDRAW,
@@ -178,6 +168,6 @@ namespace Jade
 			.lpszClassName = "JadeWindowClass"
 		};
 
-		RegisterClassA(&Win32Info.WindowClass);
+		ASSERT(RegisterClassA(&Win32Info.WindowClass));
 	}
 }

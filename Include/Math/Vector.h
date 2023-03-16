@@ -39,6 +39,8 @@ namespace Jade
 		Vector2(T X, T Y) : TVector(X, Y) {}
 		T& X() { return this->Elements[0]; }
 		T& Y() { return this->Elements[1]; }
+		const T& X() const { return this->Elements[0]; }
+		const T& Y() const { return this->Elements[1]; }
 	};
 
 	template<typename T>
